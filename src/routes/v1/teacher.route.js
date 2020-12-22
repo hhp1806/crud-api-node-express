@@ -1,39 +1,39 @@
 const express = require('express');
 const auth = require('../../middlewares/auth');
 const validate = require('../../middlewares/validate');
-const userValidation = require('../../validations/user.validation');
-const userController = require('../../controllers/user.controller');
+const teacherValidation = require('../../validations/teacher.validation');
+const teacherController = require('../../controllers/teacher.controller');
 
 const router = express.Router();
 
 router
   .route('/')
-  .post(auth('manageUsers'), validate(userValidation.createUser), userController.createUser)
-  .get(auth('getUsers'), validate(userValidation.getUsers), userController.getUsers);
+  .post(validate(teacherValidation.createTeacher), teacherController.createTeacher)
+  .get(validate(teacherValidation.getTeachers), teacherController.getTeachers);
 
 router
-  .route('/:userId')
-  .get(auth('getUsers'), validate(userValidation.getUser), userController.getUser)
-  .patch(auth('manageUsers'), validate(userValidation.updateUser), userController.updateUser)
-  .delete(auth('manageUsers'), validate(userValidation.deleteUser), userController.deleteUser);
+  .route('/:teacherId')
+  .get(validate(teacherValidation.getTeacher), teacherController.getTeacher)
+  .patch(validate(teacherValidation.updateTeacher), teacherController.updateTeacher)
+  .delete(validate(teacherValidation.deleteTeacher), teacherController.deleteTeacher);
 
 module.exports = router;
 
 /**
  * @swagger
  * tags:
- *   name: Users
- *   description: User management and retrieval
+ *   name: Teachers
+ *   description: Teacher management and retrieval
  */
 
 /**
  * @swagger
  * paths:
- *  /users:
+ *  /teachers:
  *    post:
- *      summary: Create a user
- *      description: Only admins can create other users.
- *      tags: [Users]
+ *      summary: Create a teacher
+ *      description: Only admins can create other teacher.
+ *      tags: [Teachers]
  *      security:
  *        - bearerAuth: []
  *      requestBody:
@@ -45,8 +45,8 @@ module.exports = router;
  *              required:
  *                - name
  *                - email
- *                - password
- *                - role
+ *                - department
+ *                - address
  *              properties:
  *                name:
  *                  type: string
@@ -54,26 +54,29 @@ module.exports = router;
  *                  type: string
  *                  format: email
  *                  description: must be unique
- *                password:
+ *                gender:
  *                  type: string
- *                  format: password
- *                  minLength: 8
- *                  description: At least one number and one letter
- *                role:
- *                   type: string
- *                   enum: [user, admin]
+ *                  enum: [MALE, FEMALE, OTHER]
+ *                department:
+ *                  type: string
+ *                address:
+ *                  type: string
+ *                phone:
+ *                  type: string                  
  *              example:
- *                name: fake name
- *                email: fake@example.com
- *                password: password1
- *                role: user
+ *                name: Phuoc Huynh
+ *                email: phuochuynh@example.com
+ *                gender: MALE
+ *                department: department
+ *                address: Hoa Minh, Lien Chieu, Danang
+ *                phone: 0905551234
  *      responses:
  *        "201":
  *          description: Created
  *          content:
  *            application/json:
  *              schema:
- *                 $ref: '#/components/schemas/User'
+ *                 $ref: '#/components/schemas/Teacher'
  *        "400":
  *          $ref: '#/components/responses/DuplicateEmail'
  *        "401":
@@ -82,22 +85,27 @@ module.exports = router;
  *          $ref: '#/components/responses/Forbidden'
  *
  *    get:
- *      summary: Get all users
- *      description: Only admins can retrieve all users.
- *      tags: [Users]
+ *      summary: Get all teachers
+ *      description: Only admins can retrieve all teachers.
+ *      tags: [Teachers]
  *      security:
  *        - bearerAuth: []
  *      parameters:
  *        - in: query
+ *          name: department
+ *          schema:
+ *            type: string
+ *          description: teacher's department
+ *        - in: query
+ *          name: address
+ *          schema:
+ *            type: string
+ *          description: teacher's address
+ *        - in: query
  *          name: name
  *          schema:
  *            type: string
- *          description: User name
- *        - in: query
- *          name: role
- *          schema:
- *            type: string
- *          description: User role
+ *          description: teacher's name
  *        - in: query
  *          name: sortBy
  *          schema:
@@ -128,7 +136,7 @@ module.exports = router;
  *                  results:
  *                    type: array
  *                    items:
- *                      $ref: '#/components/schemas/User'
+ *                      $ref: '#/components/schemas/Teacher'
  *                  page:
  *                    type: integer
  *                    example: 1
@@ -150,11 +158,10 @@ module.exports = router;
 /**
  * @swagger
  * paths:
- *  /users/{id}:
+ *  /teachers/{id}:
  *    get:
- *      summary: Get a user
- *      description: Logged in users can fetch only their own user information. Only admins can fetch other users.
- *      tags: [Users]
+ *      summary: Get a teacher
+ *      tags: [Teachers]
  *      security:
  *        - bearerAuth: []
  *      parameters:
@@ -163,25 +170,24 @@ module.exports = router;
  *          required: true
  *          schema:
  *            type: string
- *          description: User id
+ *          description: Teacher id
  *      responses:
  *        "200":
  *          description: OK
  *          content:
  *            application/json:
  *              schema:
- *                 $ref: '#/components/schemas/User'
+ *                 $ref: '#/components/schemas/Teacher'
  *        "401":
  *          $ref: '#/components/responses/Unauthorized'
  *        "403":
  *          $ref: '#/components/responses/Forbidden'
  *        "404":
  *          $ref: '#/components/responses/NotFound'
- *
+ * 
  *    patch:
- *      summary: Update a user
- *      description: Logged in users can only update their own information. Only admins can update other users.
- *      tags: [Users]
+ *      summary: Update a teacher
+ *      tags: [Teachers]
  *      security:
  *        - bearerAuth: []
  *      parameters:
@@ -190,7 +196,7 @@ module.exports = router;
  *          required: true
  *          schema:
  *            type: string
- *          description: User id
+ *          description: Teacher's id
  *      requestBody:
  *        required: true
  *        content:
@@ -204,22 +210,29 @@ module.exports = router;
  *                  type: string
  *                  format: email
  *                  description: must be unique
- *                password:
+ *                department: 
  *                  type: string
- *                  format: password
- *                  minLength: 8
- *                  description: At least one number and one letter
+ *                address: 
+ *                  type: string
+ *                phone: 
+ *                  type: string
+ *                gender: 
+ *                  type: string
+ *                  enum: [MALE, FEMALE, OTHER]
  *              example:
- *                name: fake name
- *                email: fake@example.com
- *                password: password1
+ *                name: Phuoc Huynh
+ *                email: phuochuynh@example.com
+ *                gender: MALE
+ *                department: department
+ *                address: Hoa Minh, Lien Chieu, Danang
+ *                phone: 0905551234
  *      responses:
  *        "200":
  *          description: OK
  *          content:
  *            application/json:
  *              schema:
- *                 $ref: '#/components/schemas/User'
+ *                 $ref: '#/components/schemas/teacher'
  *        "400":
  *          $ref: '#/components/responses/DuplicateEmail'
  *        "401":
@@ -230,9 +243,8 @@ module.exports = router;
  *          $ref: '#/components/responses/NotFound'
  *
  *    delete:
- *      summary: Delete a user
- *      description: Logged in users can delete only themselves. Only admins can delete other users.
- *      tags: [Users]
+ *      summary: Delete a teacher
+ *      tags: [Teachers]
  *      security:
  *        - bearerAuth: []
  *      parameters:
@@ -241,7 +253,7 @@ module.exports = router;
  *          required: true
  *          schema:
  *            type: string
- *          description: User id
+ *          description: Teacher id
  *      responses:
  *        "200":
  *          description: No content
@@ -252,3 +264,4 @@ module.exports = router;
  *        "404":
  *          $ref: '#/components/responses/NotFound'
  */
+

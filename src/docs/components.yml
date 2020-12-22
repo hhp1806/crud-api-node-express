@@ -19,6 +19,79 @@ components:
         name: fake name
         role: user
 
+    Student:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        gender:
+          type: string
+          enum: [MALE, FEMALE, OTHER]
+        city:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+      example:
+        id: 5ebac534954b54139806c112
+        email: phuochuynh@example.com
+        name: Phuoc Huynh
+        gender: MALE
+        city: Danang
+        address: Hoa Minh, Lien Chieu, Danang
+        phone: 0905551234
+
+    Teacher:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+          format: email
+        name:
+          type: string
+        gender:
+          type: string
+          enum: [MALE, FEMALE, OTHER]
+        department:
+          type: string
+        address:
+          type: string
+        phone:
+          type: string
+      example:
+        id: 5ebac534954b54139806c112
+        email: phuochuynh@example.com
+        name: Phuoc Huynh
+        gender: MALE
+        department: department
+        address: Hoa Minh, Lien Chieu, Danang
+        phone: 0905551234    
+
+    Course:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        department:
+          type: string
+        faculty:
+          type: string
+      example:
+        id: 5ebac534954b54139806c112
+        name: name
+        department: department
+        faculty: faculty 
+
     Token:
       type: object
       properties:

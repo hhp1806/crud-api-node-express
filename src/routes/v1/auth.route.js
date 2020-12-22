@@ -23,7 +23,7 @@ module.exports = router;
 
 /**
  * @swagger
- * path:
+ * paths:
  *  /auth/register:
  *    post:
  *      summary: Register as user
@@ -72,7 +72,7 @@ module.exports = router;
 
 /**
  * @swagger
- * path:
+ * paths:
  *  /auth/login:
  *    post:
  *      summary: Login
@@ -121,7 +121,7 @@ module.exports = router;
 
 /**
  * @swagger
- * path:
+ * paths:
  *  /auth/logout:
  *    post:
  *      summary: Logout
@@ -148,7 +148,7 @@ module.exports = router;
 
 /**
  * @swagger
- * path:
+ * paths:
  *  /auth/refresh-tokens:
  *    post:
  *      summary: Refresh auth tokens
@@ -179,7 +179,7 @@ module.exports = router;
 
 /**
  * @swagger
- * path:
+ * paths:
  *  /auth/forgot-password:
  *    post:
  *      summary: Forgot password
@@ -208,7 +208,7 @@ module.exports = router;
 
 /**
  * @swagger
- * path:
+ * paths:
  *  /auth/reset-password:
  *    post:
  *      summary: Reset password
